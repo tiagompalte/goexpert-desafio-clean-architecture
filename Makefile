@@ -8,7 +8,7 @@ wire:
 	wire ./cmd/ordersystem
 
 protoc:
-	cd ./internal/infra/grpc/ && protoc --go_out=. --go-grpc_out=. protofiles/order.proto 
+	protoc --go_out=. --go-grpc_out=. ./internal/infra/grpc/protofiles/order.proto 
 
 gqlgen:
 	go run github.com/99designs/gqlgen generate

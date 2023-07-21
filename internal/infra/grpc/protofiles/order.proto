@@ -15,6 +15,20 @@ message CreateOrderResponse {
   float final_price = 4;
 }
 
+message blank {}
+
+message Order {
+  string id = 1;
+  double price = 2;
+  double tax = 3;
+  double final_price = 4;
+}
+
+message OrderList {
+  repeated Order orders = 1;
+}
+
 service OrderService {
   rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc ListOrders(blank) returns (OrderList);
 }
