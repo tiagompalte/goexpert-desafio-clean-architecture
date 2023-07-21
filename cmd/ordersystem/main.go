@@ -8,6 +8,7 @@ import (
 
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/streadway/amqp"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/configs"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/event/handler"
@@ -46,7 +47,9 @@ func main() {
 
 	webserver := webserver.NewWebServer(configs.WebServerPort)
 	webOrderHandler := NewWebOrderHandler(db, eventDispatcher)
-	webserver.AddHandler("/order", webOrderHandler.Create)
+	webserver.Router.Use(middleware.Logger)
+	webserver.Router.Post("/order", webOrderHandler.Create)
+	webserver.Router.Get("/order", webOrderHandler.ListAll)
 	fmt.Println("Starting web server on port", configs.WebServerPort)
 	go webserver.Start()
 

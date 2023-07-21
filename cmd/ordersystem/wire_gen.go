@@ -8,13 +8,17 @@ package main
 
 import (
 	"database/sql"
+	"github.com/google/wire"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/entity"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/event"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/infra/database"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/infra/web"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/internal/usecase"
 	"github.com/tiagompalte/goexpert-desafio-clean-architecture/pkg/events"
-	"github.com/google/wire"
+)
+
+import (
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Injectors from wire.go:
@@ -24,6 +28,12 @@ func NewCreateOrderUseCase(db *sql.DB, eventDispatcher events.EventDispatcherInt
 	orderCreated := event.NewOrderCreated()
 	createOrderUseCase := usecase.NewCreateOrderUseCase(orderRepository, orderCreated, eventDispatcher)
 	return createOrderUseCase
+}
+
+func NewListOrderUseCase(db *sql.DB) *usecase.ListOrdersUseCase {
+	orderRepository := database.NewOrderRepository(db)
+	listOrdersUseCase := usecase.NewListOrderUseCase(orderRepository)
+	return listOrdersUseCase
 }
 
 func NewWebOrderHandler(db *sql.DB, eventDispatcher events.EventDispatcherInterface) *web.WebOrderHandler {
